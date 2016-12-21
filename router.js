@@ -31,8 +31,8 @@ function user(request, response) {
         javascriptPoints: profileJSON.points.JavaScript
       }
       // simpleResponse
-      renderer.view('profile', values, response);
-      renderer.view('footer', values, response);
+      render.view('profile', values, response);
+      render.view('footer', values, response);
       response.end();
     });
 
