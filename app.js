@@ -8,10 +8,3 @@ http.createServer(function(request, response) {
 }).listen(3000);
 
 console.log('Server running!🍿');
-
-
-
-
-// Handle http route get /:username i.e. .sergeipanfilov
-
-// Function that handles the reading of files and merge in values

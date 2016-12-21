@@ -1,20 +1,22 @@
 var Profile = require('./profile');
+var render = require('./render');
 
 function home(request, response) {
 //2. handle http route GET / and POST / i.e. Home
   if(request.url === '/') {
-    response.writeHead(200, {'Content-type': 'text/plain'});
-    response.write('Header\n');
-    response.write('Search\n');
-    response.end('Footer\n');
+    response.writeHead(200, {'Content-type': 'text/html'});
+    render.view('header', {}, response);
+    render.view('search', {}, response);
+    render.view('footer', {}, response);
+    response.end();
   }
 }
 
 function user(request, response) {
   var username = request.url.replace("/", "");
   if(username.length > 0) {
-    response.writeHead(200, {'Content-type': 'text/plain'});
-    response.write('Header\n');
+    response.writeHead(200, {'Content-type': 'text/html'});
+    render.view('header', {}, response);
 
     var studentProfile = new Profile(username);
 
@@ -29,17 +31,18 @@ function user(request, response) {
         javascriptPoints: profileJSON.points.JavaScript
       }
       // simpleResponse
-      response.write(values.avatarUrl + '\n');
-      response.write(values.userName + '\n');
-      response.write(values.badges + '\n');
-      response.write(values.javascriptPoints + '\n');
-      response.end('Footer\n');
+      renderer.view('profile', values, response);
+      renderer.view('footer', values, response);
+      response.end();
     });
 
     studentProfile.on('error', function(error) {
       //show Error
-      response.write(error.message + '\n');
-      response.end('Footer\n');
+      response.writeHead(200, {'Content-type': 'text/html'});
+      render.view('error', {errorMessage: error.message}, response);
+      render.view('search', {}, response);
+      render.view('footer', {}, response);
+      response.end();
     })
   }
 }
