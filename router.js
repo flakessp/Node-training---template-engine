@@ -1,21 +1,33 @@
 var Profile = require('./profile');
 var render = require('./render');
+var queryString = require('querystring');
+
+const commonHeaders = {'Content-type': 'text/html'};
 
 function home(request, response) {
-//2. handle http route GET / and POST / i.e. Home
   if(request.url === '/') {
-    response.writeHead(200, {'Content-type': 'text/html'});
-    render.view('header', {}, response);
-    render.view('search', {}, response);
-    render.view('footer', {}, response);
-    response.end();
+    if(request.method.toLowerCase() === 'get') {
+      response.writeHead(200, commonHeaders);
+
+      render.view('header', {}, response);
+      render.view('search', {}, response);
+      render.view('footer', {}, response);
+
+      response.end();
+    } else {
+      request.on('data', function(postBody) {
+        var query = queryString.parse(postBody.toString());
+        response.writeHead(303, {'Location':"/" + query.username});
+        response.end();
+      })
+    }
   }
 }
 
 function user(request, response) {
   var username = request.url.replace("/", "");
   if(username.length > 0) {
-    response.writeHead(200, {'Content-type': 'text/html'});
+    response.writeHead(200, commonHeaders);
     render.view('header', {}, response);
 
     var studentProfile = new Profile(username);
@@ -38,7 +50,7 @@ function user(request, response) {
 
     studentProfile.on('error', function(error) {
       //show Error
-      response.writeHead(200, {'Content-type': 'text/html'});
+      response.writeHead(200, commonHeaders);
       render.view('error', {errorMessage: error.message}, response);
       render.view('search', {}, response);
       render.view('footer', {}, response);
