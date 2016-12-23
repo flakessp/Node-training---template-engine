@@ -6,6 +6,5 @@ WORKDIR /usr/src/app
 # Bundle app source
 COPY . /usr/src/app
 
-EXPOSE 8080
 
-CMD [ "node", "app.js" ]
+CMD [ "npm", "start" ]
